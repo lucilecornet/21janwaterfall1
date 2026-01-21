@@ -116,15 +116,48 @@ export function useWaterfallState() {
 
   // Shareholder actions
   const addShareholder = useCallback(
-    (name: string, classId: string, shares: number, amountInvested: number) => {
+    (name: string, classIdOrName: string, shares: number, amountInvested: number) => {
       setState((prev) => {
-        // Check if class exists, if not create it
         let newClasses = prev.classes;
-        if (!prev.classes.find((c) => c.id === classId)) {
+        let targetClassId = classIdOrName;
+
+        // Check if this is a temp class ID (created when adding a new class + shareholder together)
+        if (classIdOrName.startsWith('temp_')) {
+          // Extract the class name from temp_series_a -> Series A
+          const className = classIdOrName
+            .replace('temp_', '')
+            .split('_')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+
+          // Look for the most recently created class with a matching name
+          const existingClass = prev.classes.find(
+            (c) => c.name.toLowerCase() === className.toLowerCase()
+          );
+
+          if (existingClass) {
+            targetClassId = existingClass.id;
+          } else {
+            // Create a new class with proper name
+            const preferredClasses = prev.classes.filter((c) => !c.isCommon);
+            const newClassId = generateId();
+            const newClass: ShareClass = {
+              id: newClassId,
+              name: className,
+              isCommon: false,
+              preferenceType: 'non-participating',
+              preferenceMultiple: 1.0,
+              seniorityGroup: preferredClasses.length,
+            };
+            newClasses = [...prev.classes, newClass];
+            targetClassId = newClassId;
+          }
+        } else if (!prev.classes.find((c) => c.id === classIdOrName)) {
+          // Class ID doesn't exist, create it
           const preferredClasses = prev.classes.filter((c) => !c.isCommon);
           const newClass: ShareClass = {
-            id: classId,
-            name: classId,
+            id: classIdOrName,
+            name: classIdOrName,
             isCommon: false,
             preferenceType: 'non-participating',
             preferenceMultiple: 1.0,
@@ -136,7 +169,7 @@ export function useWaterfallState() {
         const newShareholder: Shareholder = {
           id: generateId(),
           name,
-          classId,
+          classId: targetClassId,
           shares,
           amountInvested,
         };

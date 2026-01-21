@@ -24,7 +24,6 @@ export default function Home() {
     updateSettings,
     setCurrency,
     setCompanyName,
-    addClass,
     updateClass,
     removeClass,
     addShareholder,
@@ -78,7 +77,6 @@ export default function Home() {
                 onAddShareholder={addShareholder}
                 onUpdateShareholder={updateShareholder}
                 onRemoveShareholder={removeShareholder}
-                onAddClass={addClass}
               />
             </div>
 
