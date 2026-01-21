@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Shareholder, ShareClass, Currency, CURRENCY_SYMBOLS } from '@/types';
-import { formatNumber, formatCurrency, generateId } from '@/lib/format';
+import { generateId } from '@/lib/format';
 
 interface ShareholderTableProps {
   shareholders: Shareholder[];

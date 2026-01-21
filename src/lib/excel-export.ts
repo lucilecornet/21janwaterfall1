@@ -2,8 +2,6 @@ import * as XLSX from 'xlsx';
 import {
   WaterfallResult,
   CompanySettings,
-  ShareClass,
-  Shareholder,
   CURRENCY_SYMBOLS,
 } from '@/types';
 

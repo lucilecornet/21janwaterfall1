@@ -1,6 +1,6 @@
 'use client';
 
-import { CompanySettings, Currency, CURRENCY_SYMBOLS } from '@/types';
+import { CompanySettings, CURRENCY_SYMBOLS } from '@/types';
 import { formatCurrency } from '@/lib/format';
 
 interface AdvancedSettingsProps {

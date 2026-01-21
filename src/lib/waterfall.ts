@@ -116,7 +116,7 @@ function determineConversionSet(
   const common = classes.find((c) => c.isCommon);
 
   // Iteratively determine conversion set
-  let converters = new Set<string>();
+  const converters = new Set<string>();
   let iterations = 0;
   const maxIterations = 100;
 

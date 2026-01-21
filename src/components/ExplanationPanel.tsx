@@ -1,6 +1,6 @@
 'use client';
 
-import { WaterfallExplanation, Currency, CompanySettings } from '@/types';
+import { WaterfallExplanation, CompanySettings } from '@/types';
 import { formatCurrency } from '@/lib/format';
 
 interface ExplanationPanelProps {
@@ -12,7 +12,7 @@ export function ExplanationPanel({
   explanation,
   settings,
 }: ExplanationPanelProps) {
-  const { currency, name } = settings;
+  const { currency } = settings;
 
   if (!explanation) {
     return (
@@ -37,7 +37,6 @@ export function ExplanationPanel({
     commonReceives,
   } = explanation;
 
-  const companyDisplay = name || 'The company';
   const hasShortfall = preferencePayments.some((pp) => pp.shortfall);
   const hasConversions = conversions.some((c) => c.converted);
   const hasCapsHit = capsHit.length > 0;
