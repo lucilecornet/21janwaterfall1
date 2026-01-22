@@ -10,6 +10,8 @@ interface AdvancedSettingsProps {
   onUpdate: (updates: Partial<CompanySettings>) => void;
 }
 
+const MILLION = 1_000_000;
+
 export function AdvancedSettings({
   settings,
   isOpen,
@@ -45,13 +47,14 @@ export function AdvancedSettings({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Cash on Balance ({symbol})
+                Cash on Balance ({symbol}M)
               </label>
               <input
                 type="number"
-                value={settings.cash}
+                step="0.1"
+                value={settings.cash / MILLION || ''}
                 onChange={(e) =>
-                  onUpdate({ cash: parseFloat(e.target.value) || 0 })
+                  onUpdate({ cash: (parseFloat(e.target.value) || 0) * MILLION })
                 }
                 className="mt-1 w-full text-sm border-gray-300 rounded px-3 py-2 border focus:border-blue-500 focus:ring-blue-500"
               />
@@ -60,13 +63,14 @@ export function AdvancedSettings({
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Debt ({symbol})
+                Debt ({symbol}M)
               </label>
               <input
                 type="number"
-                value={settings.debt}
+                step="0.1"
+                value={settings.debt / MILLION || ''}
                 onChange={(e) =>
-                  onUpdate({ debt: parseFloat(e.target.value) || 0 })
+                  onUpdate({ debt: (parseFloat(e.target.value) || 0) * MILLION })
                 }
                 className="mt-1 w-full text-sm border-gray-300 rounded px-3 py-2 border focus:border-blue-500 focus:ring-blue-500"
               />
@@ -77,13 +81,14 @@ export function AdvancedSettings({
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Transaction Fees ({symbol})
+                Transaction Fees ({symbol}M)
               </label>
               <input
                 type="number"
-                value={settings.fees}
+                step="0.1"
+                value={settings.fees / MILLION || ''}
                 onChange={(e) =>
-                  onUpdate({ fees: parseFloat(e.target.value) || 0 })
+                  onUpdate({ fees: (parseFloat(e.target.value) || 0) * MILLION })
                 }
                 className="mt-1 w-full text-sm border-gray-300 rounded px-3 py-2 border focus:border-blue-500 focus:ring-blue-500"
               />

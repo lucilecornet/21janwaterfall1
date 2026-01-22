@@ -51,9 +51,13 @@ export function ShareholderTable({
   const isCommonSelected = selectedClass?.isCommon ?? false;
   const isPreferred = showNewClassInput || !isCommonSelected;
 
+  // All monetary inputs are in millions - convert to actual values
+  const MILLION = 1_000_000;
+
   // Calculate shares based on input mode
   const calculateShares = (): number => {
-    const invested = parseFloat(newInvested) || 0;
+    const investedM = parseFloat(newInvested) || 0;
+    const invested = investedM * MILLION;
 
     if (inputMode === 'shares') {
       return parseFloat(newShares) || 0;
@@ -61,7 +65,8 @@ export function ShareholderTable({
       const pps = parseFloat(newPPS) || 0;
       return pps > 0 ? Math.round(invested / pps) : 0;
     } else if (inputMode === 'valuation') {
-      const valuation = parseFloat(newValuation) || 0;
+      const valuationM = parseFloat(newValuation) || 0;
+      const valuation = valuationM * MILLION;
       if (valuation <= 0 || invested <= 0) return 0;
       // Calculate ownership % and convert to shares
       // Use 10M as base share count (proportional for waterfall)
@@ -78,7 +83,8 @@ export function ShareholderTable({
     const shares = isCommonSelected && !showNewClassInput
       ? (parseFloat(newShares) || 0)
       : calculateShares();
-    const invested = parseFloat(newInvested) || 0;
+    const investedM = parseFloat(newInvested) || 0;
+    const invested = investedM * MILLION;
 
     if (showNewClassInput && newClassName.trim()) {
       // Pass a temp ID with the class name encoded - the hook will create the class
@@ -123,7 +129,7 @@ export function ShareholderTable({
                   Shares
                 </th>
                 <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Invested ({symbol})
+                  Invested ({symbol}M)
                 </th>
                 <th className="px-3 py-2 w-10"></th>
               </tr>
@@ -173,10 +179,11 @@ export function ShareholderTable({
                     <td className="px-3 py-2 whitespace-nowrap">
                       <input
                         type="number"
-                        value={sh.amountInvested}
+                        step="0.1"
+                        value={sh.amountInvested / MILLION || ''}
                         onChange={(e) =>
                           onUpdateShareholder(sh.id, {
-                            amountInvested: parseFloat(e.target.value) || 0,
+                            amountInvested: (parseFloat(e.target.value) || 0) * MILLION,
                           })
                         }
                         disabled={cls?.isCommon}
@@ -320,11 +327,12 @@ export function ShareholderTable({
           {/* Amount Invested */}
           <div>
             <label className="block text-xs text-gray-500 mb-1">
-              Amount Invested ({symbol})
+              Amount Invested ({symbol}M)
             </label>
             <input
               type="number"
-              placeholder="e.g., 5000000"
+              step="0.1"
+              placeholder="e.g., 5"
               value={newInvested}
               onChange={(e) => setNewInvested(e.target.value)}
               disabled={!isPreferred}
@@ -364,7 +372,7 @@ export function ShareholderTable({
               />
               {newPPS && newInvested && parseFloat(newPPS) > 0 && (
                 <p className="text-xs text-green-600 mt-1">
-                  = {Math.round(parseFloat(newInvested) / parseFloat(newPPS)).toLocaleString()} shares
+                  = {Math.round((parseFloat(newInvested) * MILLION) / parseFloat(newPPS)).toLocaleString()} shares
                 </p>
               )}
             </div>
@@ -374,11 +382,12 @@ export function ShareholderTable({
           {isPreferred && inputMode === 'valuation' && (
             <div>
               <label className="block text-xs text-gray-500 mb-1">
-                Post-Money Valuation ({symbol})
+                Post-Money Valuation ({symbol}M)
               </label>
               <input
                 type="number"
-                placeholder="e.g., 50000000"
+                step="0.1"
+                placeholder="e.g., 50"
                 value={newValuation}
                 onChange={(e) => setNewValuation(e.target.value)}
                 className="w-full text-sm border-gray-300 rounded px-3 py-2 border focus:border-blue-500 focus:ring-blue-500"
