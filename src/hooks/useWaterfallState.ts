@@ -30,9 +30,18 @@ const DEFAULT_COMMON_CLASS: ShareClass = {
   seniorityGroup: 999,
 };
 
+const DEFAULT_PREFERRED_CLASS: ShareClass = {
+  id: 'preferred',
+  name: '1x Preferred',
+  isCommon: false,
+  preferenceType: 'non-participating',
+  preferenceMultiple: 1.0,
+  seniorityGroup: 0,
+};
+
 const INITIAL_STATE: WaterfallState = {
   settings: DEFAULT_COMPANY_SETTINGS,
-  classes: [DEFAULT_COMMON_CLASS],
+  classes: [DEFAULT_PREFERRED_CLASS, DEFAULT_COMMON_CLASS],
   shareholders: [],
   selectedEv: 50_000_000,
   showAdvanced: false,

@@ -35,7 +35,7 @@ export function ShareholderTable({
   onRemoveShareholder,
 }: ShareholderTableProps) {
   const [newName, setNewName] = useState('');
-  const [newClassId, setNewClassId] = useState('common');
+  const [newClassId, setNewClassId] = useState('preferred');
   const [newClassName, setNewClassName] = useState('');
   const [showNewClassInput, setShowNewClassInput] = useState(false);
 
