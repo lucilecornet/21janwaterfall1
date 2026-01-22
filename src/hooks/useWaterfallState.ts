@@ -45,7 +45,7 @@ const INITIAL_STATE: WaterfallState = {
   shareholders: [],
   selectedEv: 50_000_000,
   showAdvanced: false,
-  showPerShareholder: false,
+  showPerShareholder: true,
 };
 
 export function useWaterfallState() {

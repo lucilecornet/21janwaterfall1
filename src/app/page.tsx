@@ -9,6 +9,7 @@ import {
   WaterfallTable,
   ExplanationPanel,
   ExcelExport,
+  CapTable,
 } from '@/components';
 
 export default function Home() {
@@ -79,6 +80,15 @@ export default function Home() {
                 onRemoveShareholder={removeShareholder}
               />
             </div>
+
+            {/* Cap Table */}
+            {shareholders.length > 0 && (
+              <CapTable
+                shareholders={shareholders}
+                classes={classes}
+                currency={settings.currency}
+              />
+            )}
 
             {/* Class Terms */}
             <div className="bg-white rounded-lg shadow p-6">

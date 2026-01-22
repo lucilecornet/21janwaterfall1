@@ -47,7 +47,7 @@ export function AdvancedSettings({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Cash on Balance ({symbol}M)
+                Cash on Balance ({symbol}m)
               </label>
               <input
                 type="number"
@@ -63,7 +63,7 @@ export function AdvancedSettings({
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Debt ({symbol}M)
+                Debt ({symbol}m)
               </label>
               <input
                 type="number"
@@ -81,7 +81,7 @@ export function AdvancedSettings({
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Transaction Fees ({symbol}M)
+                Transaction Fees ({symbol}m)
               </label>
               <input
                 type="number"

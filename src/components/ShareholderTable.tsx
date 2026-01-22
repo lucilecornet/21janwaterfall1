@@ -47,9 +47,6 @@ export function ShareholderTable({
   const [newValuation, setNewValuation] = useState('');
 
   const symbol = CURRENCY_SYMBOLS[currency];
-  const selectedClass = classes.find((c) => c.id === newClassId);
-  const isCommonSelected = selectedClass?.isCommon ?? false;
-  const isPreferred = showNewClassInput || !isCommonSelected;
 
   // All monetary inputs are in millions - convert to actual values
   const MILLION = 1_000_000;
@@ -80,9 +77,7 @@ export function ShareholderTable({
   const handleAdd = () => {
     if (!newName.trim()) return;
 
-    const shares = isCommonSelected && !showNewClassInput
-      ? (parseFloat(newShares) || 0)
-      : calculateShares();
+    const shares = calculateShares();
     const investedM = parseFloat(newInvested) || 0;
     const invested = investedM * MILLION;
 
@@ -129,7 +124,7 @@ export function ShareholderTable({
                   Shares
                 </th>
                 <th className="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Invested ({symbol}M)
+                  Invested ({symbol}m)
                 </th>
                 <th className="px-3 py-2 w-10"></th>
               </tr>
@@ -216,35 +211,33 @@ export function ShareholderTable({
         <div className="flex justify-between items-center">
           <p className="text-sm font-medium text-gray-700">Add Shareholder</p>
 
-          {/* Input mode toggle - only for preferred */}
-          {isPreferred && (
-            <div className="flex gap-1 text-xs">
-              <button
-                onClick={() => setInputMode('shares')}
-                className={`px-2 py-1 rounded ${
-                  inputMode === 'shares' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
-                }`}
-              >
-                Shares
-              </button>
-              <button
-                onClick={() => setInputMode('pps')}
-                className={`px-2 py-1 rounded ${
-                  inputMode === 'pps' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
-                }`}
-              >
-                PPS
-              </button>
-              <button
-                onClick={() => setInputMode('valuation')}
-                className={`px-2 py-1 rounded ${
-                  inputMode === 'valuation' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
-                }`}
-              >
-                Valuation
-              </button>
-            </div>
-          )}
+          {/* Input mode toggle - available for all share classes */}
+          <div className="flex gap-1 text-xs">
+            <button
+              onClick={() => setInputMode('shares')}
+              className={`px-2 py-1 rounded ${
+                inputMode === 'shares' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+              }`}
+            >
+              Shares
+            </button>
+            <button
+              onClick={() => setInputMode('pps')}
+              className={`px-2 py-1 rounded ${
+                inputMode === 'pps' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+              }`}
+            >
+              PPS
+            </button>
+            <button
+              onClick={() => setInputMode('valuation')}
+              className={`px-2 py-1 rounded ${
+                inputMode === 'valuation' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+              }`}
+            >
+              Valuation
+            </button>
+          </div>
         </div>
 
         {/* Row 1: Name and Class */}
@@ -324,26 +317,25 @@ export function ShareholderTable({
 
         {/* Row 2: Financial inputs */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          {/* Amount Invested */}
-          <div>
-            <label className="block text-xs text-gray-500 mb-1">
-              Amount Invested ({symbol}M)
-            </label>
-            <input
-              type="number"
-              step="0.1"
-              placeholder="e.g., 5"
-              value={newInvested}
-              onChange={(e) => setNewInvested(e.target.value)}
-              disabled={!isPreferred}
-              className={`w-full text-sm border-gray-300 rounded px-3 py-2 border focus:border-blue-500 focus:ring-blue-500 ${
-                !isPreferred ? 'bg-gray-100 text-gray-400' : ''
-              }`}
-            />
-          </div>
+          {/* Amount Invested - shown for PPS and Valuation modes */}
+          {inputMode !== 'shares' && (
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">
+                Amount Invested ({symbol}m)
+              </label>
+              <input
+                type="number"
+                step="0.1"
+                placeholder="e.g., 5"
+                value={newInvested}
+                onChange={(e) => setNewInvested(e.target.value)}
+                className="w-full text-sm border-gray-300 rounded px-3 py-2 border focus:border-blue-500 focus:ring-blue-500"
+              />
+            </div>
+          )}
 
-          {/* Shares input - shown for common OR when mode is 'shares' */}
-          {(!isPreferred || inputMode === 'shares') && (
+          {/* Shares input - shown when mode is 'shares' */}
+          {inputMode === 'shares' && (
             <div>
               <label className="block text-xs text-gray-500 mb-1">Shares</label>
               <input
@@ -357,7 +349,7 @@ export function ShareholderTable({
           )}
 
           {/* PPS input */}
-          {isPreferred && inputMode === 'pps' && (
+          {inputMode === 'pps' && (
             <div>
               <label className="block text-xs text-gray-500 mb-1">
                 Price Per Share ({symbol})
@@ -379,10 +371,10 @@ export function ShareholderTable({
           )}
 
           {/* Valuation input */}
-          {isPreferred && inputMode === 'valuation' && (
+          {inputMode === 'valuation' && (
             <div>
               <label className="block text-xs text-gray-500 mb-1">
-                Post-Money Valuation ({symbol}M)
+                Post-Money Valuation ({symbol}m)
               </label>
               <input
                 type="number"
@@ -413,13 +405,11 @@ export function ShareholderTable({
         </div>
 
         {/* Help text */}
-        {isPreferred && (
-          <p className="text-xs text-gray-500">
-            {inputMode === 'shares' && 'Enter the number of shares directly.'}
-            {inputMode === 'pps' && 'Shares will be calculated as: Amount Invested ÷ Price Per Share'}
-            {inputMode === 'valuation' && 'Ownership will be calculated as: Amount Invested ÷ Post-Money Valuation'}
-          </p>
-        )}
+        <p className="text-xs text-gray-500">
+          {inputMode === 'shares' && 'Enter the number of shares directly.'}
+          {inputMode === 'pps' && 'Shares will be calculated as: Amount Invested ÷ Price Per Share'}
+          {inputMode === 'valuation' && 'Ownership will be calculated as: Amount Invested ÷ Post-Money Valuation'}
+        </p>
       </div>
     </div>
   );
